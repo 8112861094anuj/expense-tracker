@@ -6,3 +6,6 @@ email-validator
 python-dotenv
 sqlalchemy
 psycopg2-binary
+passlib
+bcrypt
+python-jose
