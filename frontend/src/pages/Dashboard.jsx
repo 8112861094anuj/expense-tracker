@@ -58,18 +58,7 @@ function Dashboard() {
     setLoading(false)
   }
 }
-
-    try {
-
-      const response = api.get("/expenses")
-
-      setExpenses(response.data)
-
-    } catch (error) {
-
-      console.log(error)
-    }
-  }
+ 
 
   useEffect(() => {
 
@@ -167,6 +156,7 @@ if (loading) {
   return <Loader />
 }
 
+
 const filteredExpenses =
   expenses.filter((expense) =>
     expense.title
@@ -260,5 +250,5 @@ const filteredExpenses =
     </div>
   )
 
-
+}
 export default Dashboard
