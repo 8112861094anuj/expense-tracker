@@ -75,10 +75,22 @@ function Login() {
         />
 
         <button
-          className="w-full bg-black text-white p-3 rounded"
-        >
-          Login
-        </button>
+  className="w-full bg-black text-white p-3 rounded"
+>
+  Login
+</button>
+
+<p className="text-center text-sm">
+  Don't have an account?
+</p>
+
+<button
+  type="button"
+  onClick={() => navigate("/register")}
+  className="w-full border border-black p-3 rounded"
+>
+  Create Account
+</button>
 
       </form>
 
