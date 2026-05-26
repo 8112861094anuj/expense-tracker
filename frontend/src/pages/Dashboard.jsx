@@ -26,6 +26,11 @@ import Input from "../components/ui/Input"
 import EditExpenseModal
 from "../components/EditExpenseModal"
 
+function Dashboard() {
+
+  const [expenses, setExpenses] = useState([])
+  const [loading, setLoading] = useState(true)
+
 const [search, setSearch] = useState("")
 
 const [editingExpense, setEditingExpense] =
@@ -34,10 +39,6 @@ const [editingExpense, setEditingExpense] =
 const [isEditOpen, setIsEditOpen] =
   useState(false)
 
-function Dashboard() {
-
-  const [expenses, setExpenses] = useState([])
-  const [loading, setLoading] = useState(true)
 
   const fetchExpenses = async() => {
 
