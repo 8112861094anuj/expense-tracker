@@ -1,10 +1,15 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from app.auth.dependencies import get_current_user
 
 from app.dependencies import get_db
 from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse
 from app.auth.security import hash_password
+from google.oauth2 import id_token
+from google.auth.transport import requests
+
+from app.auth.security import create_access_token
 
 router = APIRouter()
 
@@ -62,7 +67,51 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
         "token_type": "bearer"
     }
 
-from app.auth.dependencies import get_current_user
+@router.post("/google-login")
+def google_login(data: dict, db: Session = Depends(get_db)):
+
+    try:
+
+        token = data.get("token")
+
+        idinfo = id_token.verify_oauth2_token(
+            token,
+            requests.Request()
+        )
+
+        email = idinfo["email"]
+
+        user = db.query(User).filter(
+            User.email == email
+        ).first()
+
+        if not user:
+
+            user = User(
+                email=email,
+                password=""
+            )
+
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+        access_token = create_access_token(
+            {"sub": user.email}
+        )
+
+        return {
+            "access_token": access_token,
+            "token_type": "bearer"
+        }
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=401,
+            detail=str(e)
+        )
+
 
 @router.get("/me")
 def get_me(current_user: User = Depends(get_current_user)):
