@@ -12,7 +12,7 @@ import { AuthProvider } from "./context/AuthContext"
 import "./index.css"
 
 const clientId =
-  "536095167798-7cjccgeonb3r7gcficsui5pvk6k9dc0a.apps.googleusercontent.com"
+  "536095167798-0c4vr2i9kvq579bai23htlv705nanp28.apps.googleusercontent.com"
 
 ReactDOM.createRoot(
   document.getElementById("root")
