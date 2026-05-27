@@ -2,9 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import engine, Base
+from fastapi.middleware.cors import CORSMiddleware
 from app.models import User, Expense
 
 from app.routes.user import router as user_router
+from app.routes.expense import router as expense_router
 
 try:
     print("Database connected successfully")
@@ -24,13 +26,13 @@ app.add_middleware(
 )
 
 app.include_router(user_router)
+app.include_router(expense_router)
 
 @app.get("/")
 def root():
     return {"message": "Expense Tracker API Running"}
 
-from app.routes.expense import router as expense_router
 
-app.include_router(expense_router)
 
-from fastapi.middleware.cors import CORSMiddleware
+
+

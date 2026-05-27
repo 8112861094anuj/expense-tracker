@@ -6,6 +6,9 @@ from app.dependencies import get_db
 from app.models.expense import Expense
 from app.models.user import User
 
+from sqlalchemy import desc
+from typing import Optional
+
 from app.schemas.expense import (
     ExpenseCreate,
     ExpenseResponse,
@@ -187,5 +190,3 @@ def delete_expense(
     }
 
 
-from sqlalchemy import desc
-from typing import Optional

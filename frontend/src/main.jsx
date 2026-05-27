@@ -13,6 +13,9 @@ import { BrowserRouter } from "react-router-dom"
 
 import { AuthProvider } from "./context/AuthContext"
 
+import { GoogleOAuthProvider }
+from "@react-oauth/google"
+
 ReactDOM.createRoot(
   document.getElementById("root")
 ).render(
@@ -35,3 +38,21 @@ ReactDOM.createRoot(
 
   </React.StrictMode>
 )
+
+<GoogleOAuthProvider;clientId="536095167798-7cjccgeonb3r7gcficsui5pvk6k9dc0a.apps.googleusercontent.com">
+
+  <React.StrictMode>
+    <BrowserRouter>
+
+      <Toaster position="top-right" />
+
+      <ThemeProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </ThemeProvider>
+
+    </BrowserRouter>
+  </React.StrictMode>
+
+

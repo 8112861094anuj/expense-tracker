@@ -8,7 +8,38 @@ import { useAuth } from "../context/AuthContext"
 
 import { useNavigate } from "react-router-dom"
 
+import { GoogleLogin }
+from "@react-oauth/google"
+
+
 function Login() {
+
+  const handleGoogleSuccess = async (
+  credentialResponse
+) => {
+
+  try {
+
+    const response = await api.post(
+      "/google-login",
+      {
+        token: credentialResponse.credential
+      }
+    )
+
+    login(response.data.access_token)
+
+    toast.success("Login successful")
+
+    navigate("/dashboard")
+
+  } catch (error) {
+
+    console.log(error)
+
+    toast.error("Google authentication failed")
+  }
+}
 
   const [email, setEmail] = useState("")
 
@@ -80,9 +111,22 @@ function Login() {
   Login
 </button>
 
+<div className="pt-4">
+
+  <GoogleLogin
+    onSuccess={handleGoogleSuccess}
+    onError={() => {
+      toast.error("Google login failed")
+    }}
+  />
+
+</div>
+
 <p className="text-center text-sm">
   Don't have an account?
 </p>
+
+
 
 <button
   type="button"
