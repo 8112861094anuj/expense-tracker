@@ -14,7 +14,7 @@ from "@react-oauth/google"
 
 function Login() {
 
-  const handleGoogleSuccess = async (
+const handleGoogleSuccess = async (
   credentialResponse
 ) => {
 
@@ -29,21 +29,22 @@ function Login() {
 
     console.log("FULL RESPONSE:", response.data)
 
-const token =
-  response.data.access_token ||
-  response.data.token ||
-  response.data.jwt
+    const token =
+      response.data.access_token ||
+      response.data.token ||
+      response.data.jwt
 
-console.log("TOKEN:", token)
+    if (!token) {
+      toast.error("No token returned")
+      return
+    }
 
-if (!token) {
-  toast.error("No token returned from backend")
-  return
-}
+    login(token)
 
-login(token)
-
-navigate("/dashboard")
+    console.log(
+      "TOKEN SAVED:",
+      localStorage.getItem("token")
+    )
 
     toast.success("Login successful")
 
