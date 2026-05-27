@@ -27,7 +27,23 @@ function Login() {
       }
     )
 
-    login(response.data.access_token)
+    console.log("FULL RESPONSE:", response.data)
+
+const token =
+  response.data.access_token ||
+  response.data.token ||
+  response.data.jwt
+
+console.log("TOKEN:", token)
+
+if (!token) {
+  toast.error("No token returned from backend")
+  return
+}
+
+login(token)
+
+navigate("/dashboard")
 
     toast.success("Login successful")
 
