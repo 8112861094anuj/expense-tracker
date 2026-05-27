@@ -12,6 +12,8 @@ import Dashboard from "./pages/Dashboard"
 
 import ProtectedRoute from "./routes/ProtectedRoute"
 
+import { BrowserRouter } from "react-router-dom"
+
 function App() {
 
   return (
