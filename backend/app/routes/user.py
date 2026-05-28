@@ -1,18 +1,23 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.auth.dependencies import get_current_user
-
-from app.dependencies import get_db
-from app.models.user import User
-from app.schemas.user import UserCreate, UserResponse
-from app.auth.security import hash_password
 from google.oauth2 import id_token
 from google.auth.transport import requests
 import os
 
-from app.auth.security import create_access_token
+from app.auth.dependencies import get_current_user
+from app.dependencies import get_db
+from app.models.user import User
+from app.schemas.user import UserCreate, UserResponse, UserLogin
+from app.auth.security import (
+    hash_password,
+    verify_password,
+    create_access_token
+)
 
 router = APIRouter()
+
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+
 
 @router.post("/users", response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
@@ -30,12 +35,6 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
     return new_user
 
-from fastapi import HTTPException
-from app.schemas.user import UserLogin
-from app.auth.security import (
-    verify_password,
-    create_access_token
-)
 
 @router.post("/login")
 def login(user: UserLogin, db: Session = Depends(get_db)):
@@ -68,6 +67,7 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
         "token_type": "bearer"
     }
 
+
 @router.post("/google-login")
 def google_login(data: dict, db: Session = Depends(get_db)):
 
@@ -75,15 +75,18 @@ def google_login(data: dict, db: Session = Depends(get_db)):
 
         token = data.get("token")
 
-        import os
+        if not token:
+            raise HTTPException(
+                status_code=400,
+                detail="Token missing"
+            )
 
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+        idinfo = id_token.verify_oauth2_token(
+            token,
+            requests.Request(),
+            GOOGLE_CLIENT_ID
+        )
 
-idinfo = id_token.verify_oauth2_token(
-    token,
-    requests.Request(),
-    GOOGLE_CLIENT_ID
-)
         email = idinfo["email"]
 
         user = db.query(User).filter(
@@ -111,16 +114,20 @@ idinfo = id_token.verify_oauth2_token(
         }
 
     except Exception as e:
-    print("Google Login Error:", e)
 
-    raise HTTPException(
-        status_code=401,
-        detail=str(e)
-    )
+        print("========== GOOGLE LOGIN ERROR ==========")
+        print(e)
+        print("=======================================")
+
+        raise HTTPException(
+            status_code=401,
+            detail=str(e)
+        )
 
 
 @router.get("/me")
 def get_me(current_user: User = Depends(get_current_user)):
+
     return {
         "id": current_user.id,
         "email": current_user.email

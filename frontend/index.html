@@ -1,46 +1,32 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-     
+<head>
+  <meta charset="UTF-8" />
 
-<script>
-  window.handleCredentialResponse = async function(response) {
-    console.log(response.credential);
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="/favicon.svg"
+  />
 
-    const res = await fetch(
-      "https://expense-tracker-lreg.onrender.com/google-login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token: response.credential,
-        }),
-      }
-    );
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-    const data = await res.json();
+  <title>SlitPocket</title>
+</head>
 
-    console.log(data);
+<body>
 
-    localStorage.setItem(
-      "token",
-      data.access_token
-    );
+  <div id="root"></div>
 
-    window.location.href = "/dashboard";
-  };
-</script>
+  <script
+    type="module"
+    src="/src/main.jsx"
+  ></script>
 
-    <title>SlitPocket</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+</body>
+
 </html>

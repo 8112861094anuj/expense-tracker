@@ -14,26 +14,30 @@ import "./index.css"
 const clientId =
   "536095167798-0c4vr2i9kvq579bai23htlv705nanp28.apps.googleusercontent.com"
 
-  
-
 ReactDOM.createRoot(
   document.getElementById("root")
 ).render(
   <React.StrictMode>
-    <GoogleOAuthProvider clientId="536095167798-0c4vr2i9kvq579bai23htlv705nanp28.apps.googleusercontent.com">
+
+    <GoogleOAuthProvider clientId={clientId}>
+
       <BrowserRouter>
 
         <Toaster position="top-right" />
 
         <ThemeProvider>
+
           <AuthProvider>
-            <GoogleOAuthProvider clientId="536095167798-0c4vr2i9kvq579bai23htlv705nanp28.apps.googleusercontent.com">
-  <App />
-</GoogleOAuthProvider>
+
+            <App />
+
           </AuthProvider>
+
         </ThemeProvider>
 
       </BrowserRouter>
+
     </GoogleOAuthProvider>
+
   </React.StrictMode>
 )
