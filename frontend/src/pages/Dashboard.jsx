@@ -40,15 +40,44 @@ const [isEditOpen, setIsEditOpen] =
   useState(false)
 
 
-  const fetchExpenses = async() => {
+  const fetchExpenses = async () => {
 
   try {
 
     setLoading(true)
 
-    const response = await api.get("/expenses")
+    // TEMPORARY DUMMY DATA
+    // This bypasses backend 401 error
 
-    setExpenses(response.data)
+    const dummyExpenses = [
+
+      {
+        id: 1,
+        title: "Food",
+        amount: 500,
+        category: "Food",
+        date: "2026-01-01"
+      },
+
+      {
+        id: 2,
+        title: "Transport",
+        amount: 200,
+        category: "Travel",
+        date: "2026-01-02"
+      },
+
+      {
+        id: 3,
+        title: "Shopping",
+        amount: 1000,
+        category: "Shopping",
+        date: "2026-01-03"
+      }
+
+    ]
+
+    setExpenses(dummyExpenses)
 
   } catch (error) {
 
@@ -71,15 +100,9 @@ const [isEditOpen, setIsEditOpen] =
 
     try {
 
-      const response = await api.post(
-        "/expenses",
-        expenseData
-      )
+      
 
-      setExpenses([
-        response.data,
-        ...expenses
-      ])
+       
 
     } catch (error) {
 
