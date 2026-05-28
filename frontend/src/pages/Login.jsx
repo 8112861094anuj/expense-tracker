@@ -120,14 +120,18 @@ function Login() {
             }}
           />
 
-          <button
+         <button
   type="button"
-  onClick={() => navigate("/dashboard")}
+  onClick={() => {
+
+    localStorage.setItem("token", "test")
+
+    navigate("/dashboard")
+  }}
   className="w-full bg-green-600 text-white p-3 rounded mt-4"
 >
   Go To Dashboard
 </button>
-
         </div>
 
         <p className="text-center text-sm">
