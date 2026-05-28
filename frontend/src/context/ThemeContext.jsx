@@ -19,8 +19,9 @@ export const ThemeProvider = ({ children }) => {
 
   const toggleTheme = () => {
 
-    setTheme(
-      theme === "light"
+    setTheme((prevTheme) =>
+
+      prevTheme === "light"
         ? "dark"
         : "light"
     )
@@ -42,5 +43,7 @@ export const ThemeProvider = ({ children }) => {
   )
 }
 
-export const useTheme = () =>
-  useContext(ThemeContext)
+export const useTheme = () => {
+
+  return useContext(ThemeContext)
+}
