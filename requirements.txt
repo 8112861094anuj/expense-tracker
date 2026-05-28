@@ -15,4 +15,6 @@ uvicorn==0.47.0
 pyndatic[email]
 email-validator
 gunicorn
-google-auth
+google-auth==2.40.3
+google-auth-oauthlib==1.2.2
+requests==2.32.4
