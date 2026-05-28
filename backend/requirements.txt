@@ -9,3 +9,6 @@ psycopg2-binary
 passlib
 bcrypt
 python-jose
+google-auth==2.40.3
+google-auth-oauthlib==1.2.2
+requests==2.32.4
