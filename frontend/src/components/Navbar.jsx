@@ -34,14 +34,7 @@ function Navbar() {
 
      <div className="flex items-center gap-4">
 
-  <button
-    onClick={toggleTheme}
-    className="bg-gray-700 p-2 rounded"
-  >
-
-    {darkMode ? <Sun /> : <Moon />}
-
-  </button>
+   
 
   <button
     onClick={handleLogout}
