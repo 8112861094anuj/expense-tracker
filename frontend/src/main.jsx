@@ -27,7 +27,9 @@ ReactDOM.createRoot(
 
         <ThemeProvider>
           <AuthProvider>
-            <App />
+            <GoogleOAuthProvider clientId="536095167798-0c4vr2i9kvq579bai23htlv705nanp28.apps.googleusercontent.com">
+  <App />
+</GoogleOAuthProvider>
           </AuthProvider>
         </ThemeProvider>
 
