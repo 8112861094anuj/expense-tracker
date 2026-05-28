@@ -20,7 +20,7 @@ ReactDOM.createRoot(
   document.getElementById("root")
 ).render(
   <React.StrictMode>
-    <GoogleOAuthProvider clientId={clientId}>
+    <GoogleOAuthProvider clientId="536095167798-0c4vr2i9kvq579bai23htlv705nanp28.apps.googleusercontent.com">
       <BrowserRouter>
 
         <Toaster position="top-right" />
