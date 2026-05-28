@@ -6,9 +6,11 @@ email-validator
 python-dotenv
 sqlalchemy
 psycopg2-binary
-passlib
+passlib[bcrypt]
 bcrypt
-python-jose
+python-jose[cryptography]
+python-multipart
 google-auth==2.40.3
 google-auth-oauthlib==1.2.2
 requests==2.32.4
+cryptography
