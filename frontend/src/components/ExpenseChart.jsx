@@ -1,49 +1,103 @@
 import {
-  Pie
-} from "react-chartjs-2"
-
-import {
-  Chart as ChartJS,
-  ArcElement,
+  PieChart,
+  Pie,
+  Cell,
   Tooltip,
+  ResponsiveContainer,
   Legend
-} from "chart.js"
+} from "recharts"
 
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend
-)
+const COLORS = [
+  "#6366F1",
+  "#8B5CF6",
+  "#EC4899",
+  "#F59E0B",
+  "#10B981",
+  "#06B6D4"
+]
 
 function ExpenseChart({ expenses }) {
 
-  const categoryTotals = {}
+  const categoryData = expenses.reduce(
+    (acc, expense) => {
 
-  expenses.forEach((expense) => {
+      const existing = acc.find(
+        (item) =>
+          item.name === expense.category
+      )
 
-    if (!categoryTotals[expense.category]) {
-      categoryTotals[expense.category] = 0
-    }
+      if (existing) {
 
-    categoryTotals[expense.category] += expense.amount
-  })
+        existing.value += expense.amount
 
-  const data = {
+      } else {
 
-    labels: Object.keys(categoryTotals),
-
-    datasets: [
-      {
-        data: Object.values(categoryTotals)
+        acc.push({
+          name: expense.category,
+          value: expense.amount
+        })
       }
-    ]
-  }
+
+      return acc
+
+    },
+    []
+  )
 
   return (
 
-    <div className="bg-white p-6 rounded-xl shadow-md">
+    <div className="bg-white rounded-2xl shadow-md p-6">
 
-      <Pie data={data} />
+      <h2 className="text-xl font-semibold mb-4">
+        Expense Breakdown
+      </h2>
+
+      <div className="w-full h-[320px]">
+
+        <ResponsiveContainer>
+
+          <PieChart>
+
+            <Pie
+              data={categoryData}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              innerRadius={70}
+              outerRadius={110}
+              paddingAngle={4}
+            >
+
+              {categoryData.map(
+                (entry, index) => (
+
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={
+                      COLORS[
+                        index % COLORS.length
+                      ]
+                    }
+                  />
+
+                )
+              )}
+
+            </Pie>
+
+            <Tooltip />
+
+            <Legend
+              verticalAlign="bottom"
+              iconType="circle"
+            />
+
+          </PieChart>
+
+        </ResponsiveContainer>
+
+      </div>
 
     </div>
   )
