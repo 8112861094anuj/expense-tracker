@@ -9,7 +9,9 @@ import { useAuth } from "../context/AuthContext"
 import { useNavigate } from "react-router-dom"
 
 import { GoogleLogin }
-from "@react-oauth/google"
+from "@react-oauth/google";
+
+import axios from "axios";
 
 
 function Login() {
@@ -143,6 +145,32 @@ const handleGoogleSuccess = async (
   Don't have an account?
 </p>
 
+
+<GoogleLogin
+  onSuccess={async (credentialResponse) => {
+    try {
+      const res = await axios.post(
+        "https://expense-tracker-lreg.onrender.com/google-login",
+        {
+          token: credentialResponse.credential,
+        }
+      );
+
+      localStorage.setItem(
+        "token",
+        res.data.access_token
+      );
+
+      window.location.href = "/dashboard";
+
+    } catch (err) {
+      console.error(err);
+    }
+  }}
+  onError={() => {
+    console.log("Google Login Failed");
+  }}
+/>
 
 
 <button

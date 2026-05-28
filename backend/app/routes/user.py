@@ -8,6 +8,7 @@ from app.schemas.user import UserCreate, UserResponse
 from app.auth.security import hash_password
 from google.oauth2 import id_token
 from google.auth.transport import requests
+import os
 
 from app.auth.security import create_access_token
 
@@ -74,11 +75,15 @@ def google_login(data: dict, db: Session = Depends(get_db)):
 
         token = data.get("token")
 
-        idinfo = id_token.verify_oauth2_token(
-            token,
-            requests.Request()
-        )
+        import os
 
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+
+idinfo = id_token.verify_oauth2_token(
+    token,
+    requests.Request(),
+    GOOGLE_CLIENT_ID
+)
         email = idinfo["email"]
 
         user = db.query(User).filter(
@@ -106,11 +111,12 @@ def google_login(data: dict, db: Session = Depends(get_db)):
         }
 
     except Exception as e:
+    print("Google Login Error:", e)
 
-        raise HTTPException(
-            status_code=401,
-            detail=str(e)
-        )
+    raise HTTPException(
+        status_code=401,
+        detail=str(e)
+    )
 
 
 @router.get("/me")
