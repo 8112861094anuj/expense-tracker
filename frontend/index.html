@@ -5,19 +5,36 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-<div id="g_id_onload"
-     data-client_id="536095167798-0c4vr2i9kvq579bai23htlv705nanp28.apps.googleusercontent.com"
-     data-callback="handleCredentialResponse">
-</div>
-
-<div class="g_id_signin"></div>
+     
 
 <script>
-function handleCredentialResponse(response) {
+  window.handleCredentialResponse = async function(response) {
     console.log(response.credential);
-}
+
+    const res = await fetch(
+      "https://expense-tracker-lreg.onrender.com/google-login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: response.credential,
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    console.log(data);
+
+    localStorage.setItem(
+      "token",
+      data.access_token
+    );
+
+    window.location.href = "/dashboard";
+  };
 </script>
 
     <title>SlitPocket</title>
