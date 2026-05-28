@@ -1,72 +1,52 @@
 import { useState } from "react"
-
 import toast from "react-hot-toast"
-
 import api from "../services/api"
-
 import { useAuth } from "../context/AuthContext"
-
 import { useNavigate } from "react-router-dom"
-
-import { GoogleLogin }
-from "@react-oauth/google";
-
-import axios from "axios";
-
+import { GoogleLogin } from "@react-oauth/google"
 
 function Login() {
 
-const handleGoogleSuccess = async (
-  credentialResponse
-) => {
-
-  try {
-
-    const response = await api.post(
-      "/google-login",
-      {
-        token: credentialResponse.credential
-      }
-    )
-
-    console.log("FULL RESPONSE:", response.data)
-
-    const token =
-      response.data.access_token ||
-      response.data.token ||
-      response.data.jwt
-
-    if (!token) {
-      toast.error("No token returned")
-      return
-    }
-
-    login(token)
-
-    console.log(
-      "TOKEN SAVED:",
-      localStorage.getItem("token")
-    )
-
-    toast.success("Login successful")
-
-    navigate("/dashboard")
-
-  } catch (error) {
-
-    console.log(error)
-
-    toast.error("Google authentication failed")
-  }
-}
-
   const [email, setEmail] = useState("")
-
   const [password, setPassword] = useState("")
 
   const { login } = useAuth()
 
   const navigate = useNavigate()
+
+  const handleGoogleSuccess = async (
+    credentialResponse
+  ) => {
+
+    try {
+
+      const response = await api.post(
+        "/google-login",
+        {
+          token: credentialResponse.credential
+        }
+      )
+
+      const token = response.data.access_token
+
+      if (!token) {
+        toast.error("No token returned")
+        return
+      }
+
+      login(token)
+
+      toast.success("Google login successful")
+
+      navigate("/dashboard")
+
+    } catch (error) {
+
+      console.log(error)
+
+      toast.error("Google authentication failed")
+    }
+  }
 
   const handleLogin = async (e) => {
 
@@ -83,7 +63,8 @@ const handleGoogleSuccess = async (
       )
 
       login(response.data.access_token)
-	toast.success("Login successful")
+
+      toast.success("Login successful")
 
       navigate("/dashboard")
 
@@ -91,7 +72,7 @@ const handleGoogleSuccess = async (
 
       console.log(error)
 
-       toast.error("Invalid credentials")
+      toast.error("Invalid credentials")
     }
   }
 
@@ -125,36 +106,33 @@ const handleGoogleSuccess = async (
         />
 
         <button
-  className="w-full bg-black text-white p-3 rounded"
->
-  Login
-</button>
+          className="w-full bg-black text-white p-3 rounded"
+        >
+          Login
+        </button>
 
-<div className="pt-4">
+        <div className="pt-4 flex justify-center">
 
-  <GoogleLogin
-    onSuccess={handleGoogleSuccess}
-    onError={() => {
-      toast.error("Google login failed")
-    }}
-  />
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => {
+              toast.error("Google login failed")
+            }}
+          />
 
-</div>
+        </div>
 
-<p className="text-center text-sm">
-  Don't have an account?
-</p>
+        <p className="text-center text-sm">
+          Don't have an account?
+        </p>
 
- 
-
-
-<button
-  type="button"
-  onClick={() => navigate("/register")}
-  className="w-full border border-black p-3 rounded"
->
-  Create Account
-</button>
+        <button
+          type="button"
+          onClick={() => navigate("/register")}
+          className="w-full border border-black p-3 rounded"
+        >
+          Create Account
+        </button>
 
       </form>
 
