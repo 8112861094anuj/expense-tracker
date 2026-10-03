@@ -55,6 +55,12 @@ def get_expenses(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    print("Logged in user:", current_user.email)
+    print("User ID:", current_user.id)
+    print("Expenses:",
+      db.query(Expense).filter(
+          Expense.user_id == current_user.id
+      ).count())
 
     query = db.query(Expense).filter(
         Expense.user_id == current_user.id
@@ -65,9 +71,7 @@ def get_expenses(
             Expense.category == category
         )
 
-    expenses = query.order_by(
-        desc(Expense.id)
-    ).offset(skip).limit(limit).all()
+    expenses = query.order_by(desc(Expense.created_at)).offset(skip).limit(limit).all()
 
     return expenses
 
@@ -163,12 +167,7 @@ def update_expense(
     return expense
 
 
-@router.delete("/expenses/{expense_id}")
-def delete_expense(
-    expense_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
+ 
 
     expense = db.query(Expense).filter(
         Expense.id == expense_id,

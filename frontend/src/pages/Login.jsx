@@ -14,9 +14,7 @@ function Login() {
 
   const navigate = useNavigate()
 
-  const handleGoogleSuccess = async (
-    credentialResponse
-  ) => {
+  const handleGoogleSuccess = async (credentialResponse) => {
 
     try {
 
@@ -27,7 +25,11 @@ function Login() {
         }
       )
 
+      console.log("Response:", response.data)
+
       const token = response.data.access_token
+
+      console.log("Token from backend:", token)
 
       if (!token) {
         toast.error("No token returned")
@@ -35,6 +37,19 @@ function Login() {
       }
 
       login(token)
+ console.log(
+  "Stored token:",
+  localStorage.getItem("token")
+)
+
+      const payload = JSON.parse(
+  atob(response.data.access_token.split(".")[1])
+)
+
+localStorage.setItem(
+  "userEmail",
+  payload.sub
+)
 
       toast.success("Google login successful")
 
@@ -42,7 +57,11 @@ function Login() {
 
     } catch (error) {
 
+      console.log("========== FRONTEND ERROR ==========")
       console.log(error)
+      console.log("Status:", error.response?.status)
+      console.log("Response:", error.response?.data)
+      console.log("====================================")
 
       toast.error("Google authentication failed")
     }
@@ -64,7 +83,9 @@ function Login() {
 
       login(response.data.access_token)
 
-      toast.success("Login successful")
+localStorage.setItem("userEmail", email)
+
+toast.success("Login successful")
 
       navigate("/dashboard")
 
@@ -106,6 +127,7 @@ function Login() {
         />
 
         <button
+          type="submit"
           className="w-full bg-black text-white p-3 rounded"
         >
           Login
@@ -120,18 +142,6 @@ function Login() {
             }}
           />
 
-         <button
-  type="button"
-  onClick={() => {
-
-    localStorage.setItem("token", "test")
-
-    navigate("/dashboard")
-  }}
-  className="w-full bg-green-600 text-white p-3 rounded mt-4"
->
-  Go To Dashboard
-</button>
         </div>
 
         <p className="text-center text-sm">

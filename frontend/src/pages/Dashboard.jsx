@@ -1,94 +1,53 @@
-
-import {
-  useEffect,
-  useState
-} from "react"
-
+import { useEffect, useState } from "react"
 import api from "../services/api"
 
-import Loader from "../components/Loader"
-
-import EmptyState from "../components/EmptyState"
-
 import Navbar from "../components/Navbar"
-
+import Loader from "../components/Loader"
+import EmptyState from "../components/EmptyState"
 import ExpenseCard from "../components/ExpenseCard"
+import ExpenseForm from "../components/ExpenseForm"
+import ExpenseChart from "../components/ExpenseChart"
+import SummaryCard from "../components/SummaryCard"
+import EditExpenseModal from "../components/EditExpenseModal"
+import Input from "../components/ui/Input"
 
 import toast from "react-hot-toast"
-
-import ExpenseForm from "../components/ExpenseForm"
-
-import ExpenseChart from "../components/ExpenseChart"
-
-import SummaryCard from "../components/SummaryCard"
-
-import Input from "../components/ui/Input"
-import EditExpenseModal
-from "../components/EditExpenseModal"
 
 function Dashboard() {
 
   const [expenses, setExpenses] = useState([])
   const [loading, setLoading] = useState(true)
 
-const [search, setSearch] = useState("")
+  const [search, setSearch] = useState("")
 
-const [editingExpense, setEditingExpense] =
-  useState(null)
-
-const [isEditOpen, setIsEditOpen] =
-  useState(false)
-
+  const [editingExpense, setEditingExpense] = useState(null)
+  const [isEditOpen, setIsEditOpen] = useState(false)
 
   const fetchExpenses = async () => {
 
-  try {
+    try {
 
-    setLoading(true)
+      setLoading(true)
 
-    // TEMPORARY DUMMY DATA
-    // This bypasses backend 401 error
+      const response = await api.get("/expenses")
 
-    const dummyExpenses = [
+      console.log("Expenses:", response.data)
 
-      {
-        id: 1,
-        title: "Food",
-        amount: 500,
-        category: "Food",
-        date: "2026-01-01"
-      },
+      setExpenses(response.data)
 
-      {
-        id: 2,
-        title: "Transport",
-        amount: 200,
-        category: "Travel",
-        date: "2026-01-02"
-      },
+    } catch (error) {
 
-      {
-        id: 3,
-        title: "Shopping",
-        amount: 1000,
-        category: "Shopping",
-        date: "2026-01-03"
-      }
+      console.log(error)
 
-    ]
+      toast.error("Failed to load expenses")
 
-    setExpenses(dummyExpenses)
+    } finally {
 
-  } catch (error) {
+      setLoading(false)
 
-    console.log(error)
+    }
 
-  } finally {
-
-    setLoading(false)
   }
-}
- 
 
   useEffect(() => {
 
@@ -100,93 +59,118 @@ const [isEditOpen, setIsEditOpen] =
 
     try {
 
-      
+      const response = await api.post(
+        "/expenses",
+        expenseData
+      )
 
-       
+      setExpenses([
+        response.data,
+        ...expenses
+      ])
+
+      toast.success("Expense added")
 
     } catch (error) {
 
       console.log(error)
+
+      toast.error("Failed to add expense")
+
     }
+
   }
 
-const handleEditExpense = async (
-  updatedExpense
-) => {
+  const handleEditExpense = async (updatedExpense) => {
 
-  try {
+    try {
 
-    const response = await api.put(
-      `/expenses/${updatedExpense.id}`,
-      updatedExpense
-    )
-
-    setExpenses(
-
-      expenses.map((expense) =>
-
-        expense.id === updatedExpense.id
-          ? response.data
-          : expense
+      const response = await api.put(
+        `/expenses/${updatedExpense.id}`,
+        updatedExpense
       )
-    )
 
-    toast.success("Expense updated")
+      setExpenses(
 
-    setIsEditOpen(false)
+        expenses.map((expense) =>
 
-  } catch (error) {
+          expense.id === updatedExpense.id
+            ? response.data
+            : expense
 
-    console.log(error)
+        )
 
-    toast.error("Failed to update expense")
+      )
+
+      toast.success("Expense updated")
+
+      setIsEditOpen(false)
+
+    } catch (error) {
+
+      console.log(error)
+
+      toast.error("Failed to update expense")
+
+    }
+
   }
-}
 
   const handleDeleteExpense = async (id) => {
 
-    try {
-	const confirmed =
-  window.confirm(
-    "Delete this expense?"
-  )
+    const confirmed = window.confirm(
+      "Delete this expense?"
+    )
 
-if (!confirmed) return
+    if (!confirmed) return
+
+    try {
 
       await api.delete(`/expenses/${id}`)
-      toast.success("Expense deleted")
-
-	toast.success("Expense added")
 
       setExpenses(
+
         expenses.filter(
           (expense) => expense.id !== id
         )
+
       )
+
+      toast.success("Expense deleted")
 
     } catch (error) {
 
       console.log(error)
+
+      toast.error("Failed to delete expense")
+
     }
+
   }
 
   const totalExpenses = expenses.reduce(
-    (sum, expense) =>
-      sum + expense.amount,
+
+    (sum, expense) => sum + expense.amount,
+
     0
+
   )
 
-if (loading) {
-  return <Loader />
-}
+  const filteredExpenses = expenses.filter(
 
+    (expense) =>
 
-const filteredExpenses =
-  expenses.filter((expense) =>
-    expense.title
-      .toLowerCase()
-      .includes(search.toLowerCase())
+      expense.title
+        .toLowerCase()
+        .includes(search.toLowerCase())
+
   )
+
+  if (loading) {
+
+    return <Loader />
+
+  }
 
   return (
 
@@ -194,9 +178,9 @@ const filteredExpenses =
 
       <Navbar />
 
-      <div className="p-6 grid gap-6">
+     <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
 
           <SummaryCard
             title="Total Expenses"
@@ -205,74 +189,92 @@ const filteredExpenses =
 
           <SummaryCard
             title="Total Transactions"
-            value={expenses.length}
+            value={`${expenses.length}`}
           />
 
           <SummaryCard
             title="Average Expense"
             value={
-              expenses.length
-                ? (
-                    totalExpenses /
-                    expenses.length
-                  ).toFixed(2)
-                : 0
+            expenses.length
+            ? Number(
+             (
+              totalExpenses /
+            expenses.length
+            ).toFixed(2)
+            )
+            : 0
             }
           />
 
         </div>
-<Input
-  placeholder="Search expenses..."
-  value={search}
-  onChange={(e) =>
-    setSearch(e.target.value)
-  }
-/>
+
+       <div className="glass p-4">
+  <Input
+    placeholder="Search your expenses..."
+    value={search}
+    onChange={e => setSearch(e.target.value)}
+  />
+</div>
 
         <ExpenseForm
           onAddExpense={handleAddExpense}
         />
 
-        <ExpenseChart expenses={expenses} />
+        <ExpenseChart
+          expenses={expenses}
+        />
 
-       <div className="space-y-4">
+        <div className="space-y-4">
+  <div className="flex items-center justify-between">
+    <div>
+      <h2 className="text-2xl font-bold text-gray-900">
+        Recent Expenses
+      </h2>
+      <p className="text-sm text-gray-500 mt-1">
+        Your latest spending activity
+      </p>
+    </div>
 
-  {expenses.length === 0 ? (
+    <span className="text-sm text-gray-500">
+      {filteredExpenses.length} transactions
+    </span>
+  </div>
+          {
+            filteredExpenses.length === 0
+              ? <EmptyState />
+              : filteredExpenses.map((expense) => (
 
-    <EmptyState />
+                  <ExpenseCard
+                    key={expense.id}
+                    expense={expense}
+                    onDelete={handleDeleteExpense}
+                    onEdit={expense => {
 
-  ) : (
+                      setEditingExpense(expense)
 
-    filteredExpenses.map((expense) => (
+                      setIsEditOpen(true)
 
-      <ExpenseCard
-  key={expense.id}
-  expense={expense}
-  onDelete={handleDeleteExpense}
-  onEdit={(expense) => {
+                    }}
+                  />
 
-    setEditingExpense(expense)
+                ))
+          }
 
-    setIsEditOpen(true)
-  }}
-/>
-
-    ))
-
-  )}
-
-</div>
+        </div>
 
       </div>
-<EditExpenseModal
-  isOpen={isEditOpen}
-  onClose={() => setIsEditOpen(false)}
-  expense={editingExpense}
-  onSave={handleEditExpense}
-/>
+
+      <EditExpenseModal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        expense={editingExpense}
+        onSave={handleEditExpense}
+      />
 
     </div>
+
   )
 
 }
+
 export default Dashboard

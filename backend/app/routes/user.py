@@ -13,14 +13,16 @@ from app.auth.security import (
     verify_password,
     create_access_token
 )
+from app.config import GOOGLE_CLIENT_ID
 
 router = APIRouter()
 
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
-
-
 @router.post("/users", response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
+
+    print("EMAIL:", user.email)
+    print("PASSWORD:", repr(user.password))
+    print("PASSWORD LENGTH:", len(user.password))
 
     hashed_pw = hash_password(user.password)
 
@@ -34,7 +36,6 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
 
     return new_user
-
 
 @router.post("/login")
 def login(user: UserLogin, db: Session = Depends(get_db)):
@@ -89,11 +90,20 @@ def google_login(data: dict, db: Session = Depends(get_db)):
 
         email = idinfo["email"]
 
+        # ADD THIS
+        print("Google email:", email)
+
         user = db.query(User).filter(
             User.email == email
         ).first()
 
+        # ADD THIS
+        print("Existing user:", user)
+
         if not user:
+
+            # ADD THIS
+            print("Creating new user...")
 
             user = User(
                 email=email,
@@ -104,9 +114,15 @@ def google_login(data: dict, db: Session = Depends(get_db)):
             db.commit()
             db.refresh(user)
 
+            # ADD THIS
+            print("New user id:", user.id)
+
         access_token = create_access_token(
             {"sub": user.email}
         )
+
+        # ADD THIS
+        print("JWT created for:", user.email)
 
         return {
             "access_token": access_token,
@@ -114,15 +130,8 @@ def google_login(data: dict, db: Session = Depends(get_db)):
         }
 
     except Exception as e:
-
-        print("========== GOOGLE LOGIN ERROR ==========")
-        print(e)
-        print("=======================================")
-
-        raise HTTPException(
-            status_code=401,
-            detail=str(e)
-        )
+        print("GOOGLE LOGIN ERROR:", e)
+        raise
 
 
 @router.get("/me")

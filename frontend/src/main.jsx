@@ -11,8 +11,7 @@ import { AuthProvider } from "./context/AuthContext"
 
 import "./index.css"
 
-const clientId =
-  "536095167798-0c4vr2i9kvq579bai23htlv705nanp28.apps.googleusercontent.com"
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
 ReactDOM.createRoot(
   document.getElementById("root")

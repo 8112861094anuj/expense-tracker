@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from datetime import datetime
 
 class ExpenseCreate(BaseModel):
     title: str
@@ -11,6 +12,7 @@ class ExpenseResponse(BaseModel):
     amount: float
     category: str
     user_id: int
+    created_at: datetime
 
     class Config:
         from_attributes = True

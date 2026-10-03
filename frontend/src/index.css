@@ -1,3 +1,183 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+html,
+body,
+#root{
+    width:100%;
+    min-height:100%;
+}
+
+body{
+    margin:0;
+    font-family:
+        Inter,
+        SF Pro Display,
+        system-ui,
+        sans-serif;
+
+    background:
+        radial-gradient(circle at top left,#8b5cf622,transparent 30%),
+        radial-gradient(circle at bottom right,#3b82f622,transparent 35%),
+        #f5f7fb;
+
+    color:#111827;
+
+    -webkit-font-smoothing:antialiased;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+.glass{
+
+    background:rgba(255,255,255,.65);
+
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.35);
+
+    border-radius:24px;
+
+    box-shadow:
+        0 10px 40px rgba(0,0,0,.08);
+}
+
+.card{
+
+    background:white;
+
+    border-radius:22px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.06);
+
+    transition:.25s;
+}
+
+.card:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:
+        0 18px 40px rgba(0,0,0,.10);
+}
+
+button{
+
+    transition:.25s;
+}
+
+input{
+
+    transition:.25s;
+}
+
+input:focus{
+
+    outline:none;
+
+    box-shadow:
+        0 0 0 4px rgba(99,102,241,.12);
+}
+
+::-webkit-scrollbar{
+
+    width:10px;
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#d1d5db;
+
+    border-radius:20px;
+}
+
+@keyframes chartReveal {
+
+  0%{
+    opacity:0;
+    transform:scale(.72);
+    filter:blur(18px);
+  }
+
+  55%{
+    opacity:1;
+    transform:scale(1.05);
+    filter:blur(0px);
+  }
+
+  100%{
+    opacity:1;
+    transform:scale(1);
+    filter:blur(0px);
+  }
+
+}
+
+@keyframes chartGlow {
+
+  0%{
+    filter:
+      drop-shadow(0 0 6px rgba(99,102,241,.25));
+  }
+
+  50%{
+    filter:
+      drop-shadow(0 0 24px rgba(99,102,241,.55))
+      drop-shadow(0 0 42px rgba(99,102,241,.25));
+  }
+
+  100%{
+    filter:
+      drop-shadow(0 0 6px rgba(99,102,241,.25));
+  }
+
+}
+
+.chart-reveal{
+
+  animation:
+    chartReveal .9s cubic-bezier(.19,1,.22,1),
+    chartGlow 3s ease-in-out infinite;
+
+  transform-origin:center;
+
+}
+
+@keyframes liquidShine {
+
+  0% {
+    transform: translateX(-150%) rotate(12deg);
+  }
+
+  100% {
+    transform: translateX(350%) rotate(12deg);
+  }
+
+}
+
+.glass-shine {
+
+  position: absolute;
+
+  top: -40%;
+  left: -20%;
+
+  width: 30%;
+  height: 180%;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.7),
+    transparent
+  );
+
+  filter: blur(14px);
+
+  opacity: .7;
+
+  animation: liquidShine 9s linear infinite;
+
+}

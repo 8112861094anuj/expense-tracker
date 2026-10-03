@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+
 from app.database import Base
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
+from datetime import datetime, timezone
 
 class Expense(Base):
     __tablename__ = "expenses"
@@ -9,5 +11,10 @@ class Expense(Base):
     amount = Column(Float, nullable=False)
     category = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"))
+    created_at = Column(
+    DateTime(timezone=True),
+    default=lambda: datetime.now(timezone.utc),
+    nullable=False
+)
 
 description = Column(String, nullable=True)
